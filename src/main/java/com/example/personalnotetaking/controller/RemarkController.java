@@ -2,6 +2,9 @@ package com.example.personalnotetaking.controller;
 
 import com.example.personalnotetaking.model.Remark;
 import com.example.personalnotetaking.service.RemarkService;
+
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,7 @@ import java.util.List;
 public class RemarkController {
 
     private final RemarkService service;
+    private final Counter requestCounter = Metrics.counter("request_count");
 
     /**
      * Добавление заметки
@@ -53,6 +57,7 @@ public class RemarkController {
      */
     @GetMapping
     public ResponseEntity<List<Remark>> getAllRemarks() {
+        requestCounter.increment();
         return new ResponseEntity<>(service.getAllRemarks(), HttpStatus.OK);
     }
 
